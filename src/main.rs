@@ -1,4 +1,6 @@
 use ncurses::*;
+use rand::Rng;
+use random_word::Lang;
 mod statistics;
 
 const REGULAR_TEXT: i16 = 0;
@@ -12,9 +14,8 @@ fn main() {
     initscr();
     create_colors();
 
-    // Print to the back buffer.
     let mut stats_controller = statistics::Statistics::new();
-    let original_text = "Please alway the they many things".to_string();
+    let original_text = get_random_words();
 
     while original_text.len() != stats_controller.current_text.len() {
         clear();
@@ -62,4 +63,14 @@ fn render_formatted_text(text: &String, format: i16) {
     attr_on(COLOR_PAIR(format));
     addstr(text);
     attr_off(COLOR_PAIR(format));
+}
+
+fn get_random_words() -> String {
+    let mut vec = Vec::new();
+    for _ in 0..20 {
+        let length = rand::thread_rng().gen_range(3..7);
+        vec.push(random_word::gen_len(length, Lang::En).unwrap())
+    }
+
+    vec.join(" ")
 }
